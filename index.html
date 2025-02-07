@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>D&D Zauberkarten Generator</title>
   <style>
-    /* Grundlayout */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -18,14 +17,12 @@
       padding: 20px;
     }
     .card-container p {
-  font-size: 12px; /* Passe diesen Wert an */
-  line-height: 1.4; /* Optional, um den Zeilenabstand zu ändern */
+  font-size: 12px;
+  line-height: 1.4;
 }
 .row span {
   font-size: 12px;
 }
-
-    /* Bedienfeld (links) */
     .control-panel {
       width: 300px;
     }
@@ -33,21 +30,19 @@
       display: block;
       margin-bottom: 5px;
     }
-    /* Hier kannst du die Schriftgröße der Eingabefelder ändern */
     .control-panel input[type="text"],
     .control-panel textarea,
     .control-panel select {
       width: 100%;
       box-sizing: border-box;
       margin-bottom: 5px;
-      font-size: 16px; /* Passe diese Zahl an, um die Schriftgröße zu ändern */
+      font-size: 16px;
     }
     .control-panel button {
       margin-top: 10px;
       margin-right: 5px;
     }
     
-    /* Generierte Karten (rechts) */
     .saved-container {
       flex: 1;
     }
@@ -57,7 +52,6 @@
       gap: 10px;
     }
     
-    /* Kartenlayout */
     .card-container { 
       width: 7cm; 
       min-height: 9.9cm; 
@@ -67,33 +61,32 @@
       box-sizing: border-box;
       background: #fff;
     }
-    /* Header: Schule (links), Name (zentriert), Level (rechts) */
+
     .card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 5px;
     }
-    /* Für das Schul-Icon – ersetze den Platzhalter-Link mit deinem Imgur-Link */
+
     .icon-school {
-      width: 30px;  /* Icon-Größe individuell anpassbar */
+      width: 30px;
       height: 30px;
     }
-    /* Für das Level-Icon – ersetze den Platzhalter-Link mit deinem Imgur-Link */
+
     .icon-level {
       width: 30px;
       height: 30px;
     }
-    /* Der Zaubername – Schriftgröße anpassbar */
+
     .spell-name {
-      font-size: 18px;  /* Passe diesen Wert an */
+      font-size: 18px;
       text-align: center;
       flex: 1;
       margin: 0 5px;
       word-wrap: break-word;
     }
     
-    /* Zeilen für Details */
     .row {
       display: flex;
       align-items: center;
@@ -107,7 +100,6 @@
       gap: 5px; 
     }
     
-    /* Individuelle Icon-Größen (außer Klassen) – passe diese an */
     .icon-time {
       width: 18px;
       height: 18px;
@@ -137,7 +129,6 @@
       height: 20px;
     }
     
-    /* Container für Klassen-Icons – fix am unteren Rand der Karte */
     .class-icons-container {
       position: absolute;
       bottom: 5px;
@@ -146,7 +137,7 @@
       text-align: center;
     }
     .class-icons-container img {
-      width: 20px;  /* Einheitliche Größe, anpassbar */
+      width: 20px;
       height: 20px;
       margin: 0 2px;
     }
@@ -204,7 +195,6 @@
       </label>
       <label>Schule der Magie:
 		<select id="cp-spell-school">
-		  <!-- Die Werte hier (bann, beschwoerung, etc.) dienen als Bezeichner für die Icons -->
 		  <option value="bann">Bann</option>
 		  <option value="beschwoerung">Beschwörung</option>
 		  <option value="erkenntnis">Erkenntnis</option>
@@ -258,7 +248,6 @@
       </fieldset>
       <fieldset>
 		<legend>Klassen</legend>
-		<!-- Die Werte dienen als Bezeichner für die Klassen-Icons -->
 		<label><input type="checkbox" class="cp-class" value="artificer"> Artificer</label>
 		<label><input type="checkbox" class="cp-class" value="bard"> Barde</label>
 		<label><input type="checkbox" class="cp-class" value="cleric"> Kleriker</label>
@@ -280,14 +269,11 @@
       <button id="cp-print-spells">Drucken</button>
 	</div>
 
-	<!-- Generierte Karten (rechts) -->
 	<div class="saved-container" id="saved-spells"></div>
   </div>
 
   <script>
-	  // Grenze für Beschreibung, ab der eine zweite Karte erstellt wird (anpassbar)
 	  const maxDescLength = 610;
-	  // Mapping für Schul-Icons
 const schoolIcons = {
   bann: 'https://i.imgur.com/85svaPk.png',
   beschwoerung: 'https://i.imgur.com/BmOE5id.png',
@@ -299,7 +285,6 @@ const schoolIcons = {
   verzauberung: 'https://i.imgur.com/o1hzrUR.png'
 };
 	  
-// Mapping für Level-Icons
 const levelIcons = {
   0: 'https://i.imgur.com/HH5l0tO.png',
   1: 'https://i.imgur.com/kBM5pD5.png',
@@ -313,7 +298,6 @@ const levelIcons = {
   9: 'https://i.imgur.com/Jgn8YVg.png'
 };
 	  
-	  // Mapping für Klassen-Icons (wird später im Klassenbereich genutzt)\n
 const classIcons = {
   artificer: 'https://i.imgur.com/j5bOYzj.png',
   bard: 'https://i.imgur.com/bSRUkMn.png',
@@ -326,7 +310,6 @@ const classIcons = {
   sorcerer: 'https://i.imgur.com/T9y379V.png'
 	  };
 	  
-	  // Mapping für Reichweiten-Icons – richtiges Format, ohne Bindestrich
 const rangeTypeIcons = {
   linie: 'https://i.imgur.com/R5vYvf1.png',
   beruehrung: 'https://i.imgur.com/SvTORz7.png',
@@ -337,7 +320,6 @@ const rangeTypeIcons = {
   vonselbst: 'https://i.imgur.com/bTDeWhn.png'
 };
 	  
-	// Funktion zur Generierung einer oder mehrerer Karten (bei zu langer Beschreibung)
 	function generateSpellCards() {
       const spellName = document.getElementById('cp-spell-name').value;
       const spellDesc = document.getElementById('cp-spell-description').value;
@@ -361,7 +343,6 @@ const rangeTypeIcons = {
       
       const bgStyle = bgImage ? `background-image: url('${bgImage}'); background-size: cover;` : '';
       
-      // Header mit Schule, Name und Level\n
 const headerHTML = `
 	  <div class="card-header">
 		<img class="icon-school" src="${schoolIcons[spellSchool]}" alt="Schule">
@@ -370,7 +351,6 @@ const headerHTML = `
 	  </div>
 `;
       
-// Generiere die Klassen-Icons; (Diese Schleife wird redundant sein, wenn selectedClasses bereits erstellt wurde, aber bleibt erhalten)\n
   classCheckboxes.forEach(cb => {
   const url = classIcons[cb.value];
   if (cb.checked) {
@@ -380,7 +360,6 @@ const headerHTML = `
   }
 });
       
-      // Details (Zeit, Dauer, Reichweite, Komponenten, Besonderheiten)
       const detailsHTML = `
 		<div class="row">
 		  <div>
@@ -412,7 +391,6 @@ const headerHTML = `
 	    </div>
       `;
       
-      // Bei zu langer Beschreibung, splite sie
       let card1Desc = spellDesc;
       let card2Desc = '';
       if(spellDesc.length > maxDescLength) {
@@ -446,7 +424,6 @@ const headerHTML = `
       return cards;
 	}
 	  
-	// Event-Handler für \"Zauber speichern\"
 	document.getElementById('cp-save-spell').addEventListener('click', function() {
       const cards = generateSpellCards();
       cards.forEach(cardHTML => {
@@ -456,7 +433,6 @@ const headerHTML = `
       });
 	});
 	  
-	// Event-Handler für \"Letzte Karte löschen\"\n
 	document.getElementById('cp-delete-last').addEventListener('click', function() {
       const saved = document.getElementById('saved-spells');
       if(saved.lastElementChild) {
@@ -464,7 +440,6 @@ const headerHTML = `
       }
 	});
 	  
-	// Event-Handler für \"Drucken\"\n
 	document.getElementById('cp-print-spells').addEventListener('click', function() {
       window.print();
 	});
