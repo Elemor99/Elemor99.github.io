@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D&D Zauberkarten Generator</title>
+  <style>
+    /* Grundlayout */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 20px;
+    }
+    .card-container p {
+  font-size: 12px; /* Passe diesen Wert an */
+  line-height: 1.4; /* Optional, um den Zeilenabstand zu ändern */
+}
+.row span {
+  font-size: 12px;
+}
+
+    /* Bedienfeld (links) */
+    .control-panel {
+      width: 300px;
+    }
+    .control-panel label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    /* Hier kannst du die Schriftgröße der Eingabefelder ändern */
+    .control-panel input[type="text"],
+    .control-panel textarea,
+    .control-panel select {
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 5px;
+      font-size: 16px; /* Passe diese Zahl an, um die Schriftgröße zu ändern */
+    }
+    .control-panel button {
+      margin-top: 10px;
+      margin-right: 5px;
+    }
+    
+    /* Generierte Karten (rechts) */
+    .saved-container {
+      flex: 1;
+    }
+    #saved-spells {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    /* Kartenlayout */
+    .card-container { 
+      width: 7cm; 
+      min-height: 9.9cm; 
+      border: 1px solid black; 
+      padding: 5px; 
+      position: relative; 
+      box-sizing: border-box;
+      background: #fff;
+    }
+    /* Header: Schule (links), Name (zentriert), Level (rechts) */
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    /* Für das Schul-Icon – ersetze den Platzhalter-Link mit deinem Imgur-Link */
+    .icon-school {
+      width: 30px;  /* Icon-Größe individuell anpassbar */
+      height: 30px;
+    }
+    /* Für das Level-Icon – ersetze den Platzhalter-Link mit deinem Imgur-Link */
+    .icon-level {
+      width: 30px;
+      height: 30px;
+    }
+    /* Der Zaubername – Schriftgröße anpassbar */
+    .spell-name {
+      font-size: 18px;  /* Passe diesen Wert an */
+      text-align: center;
+      flex: 1;
+      margin: 0 5px;
+      word-wrap: break-word;
+    }
+    
+    /* Zeilen für Details */
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1px;
+      line-height: 1;
+    }
+    .row > div {
+      display: flex;
+      align-items: center;
+      gap: 5px; 
+    }
+    
+    /* Individuelle Icon-Größen (außer Klassen) – passe diese an */
+    .icon-time {
+      width: 18px;
+      height: 18px;
+    }
+    .icon-duration {
+      width: 18px;
+      height: 18px;
+    }
+    .icon-range {
+      width: 23px;
+      height: 23px;
+    }
+    .icon-verbal {
+      width: 20px;
+      height: 10px;
+    }
+    .icon-gestural {
+      width: 18px;
+      height: 18px;
+    }
+    .icon-material {
+      width: 21px;
+      height: 21px;
+    }
+    .icon-special {
+      width: 20px;
+      height: 20px;
+    }
+    
+    /* Container für Klassen-Icons – fix am unteren Rand der Karte */
+    .class-icons-container {
+      position: absolute;
+      bottom: 5px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+    }
+    .class-icons-container img {
+      width: 20px;  /* Einheitliche Größe, anpassbar */
+      height: 20px;
+      margin: 0 2px;
+    }
+    .transparent {
+      opacity: 0.3;
+    }
+    
+    .divider {
+      border-top: 1px solid black;
+      margin: 5px 0;
+    }
+    
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #saved-spells, #saved-spells * {
+		visibility: visible;
+	  }
+	  #saved-spells {
+		  display: grid;
+		  grid-template-columns: repeat(3, 7cm);
+		  grid-template-rows: repeat(3, 9.9cm);
+		  gap: 0.01cm;
+		  position: absolute;
+		  top: 0;
+		  left: 0;
+		  width: 21cm;
+		  height: 29.7cm;
+	  }
+	  
+  .card-container .description:before {
+    content: '';
+    display: block;
+    border-top: 1px solid black;
+    margin-bottom: 1px;
+  }
+	  .card-container {
+		  border: 3px solid black;
+		  page-break-inside: avoid;
+	  }
+	}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Bedienfeld (links) -->
+	<div class="control-panel">
+	  <h2>Bedienfeld</h2>
+      <label>Name des Zaubers:
+		<input type="text" id="cp-spell-name">
+      </label>
+      <label>Beschreibung:
+		<textarea id="cp-spell-description"></textarea>
+      </label>
+      <label>Schule der Magie:
+		<select id="cp-spell-school">
+		  <!-- Die Werte hier (bann, beschwoerung, etc.) dienen als Bezeichner für die Icons -->
+		  <option value="bann">Bann</option>
+		  <option value="beschwoerung">Beschwörung</option>
+		  <option value="erkenntnis">Erkenntnis</option>
+		  <option value="hervorrufung">Hervorrufung</option>
+		  <option value="illusion">Illusion</option>
+		  <option value="nekromantie">Nekromantie</option>
+		  <option value="verwandlung">Verwandlung</option>
+		  <option value="verzauberung">Verzauberung</option>
+		</select>
+	  </label>
+      <label>Zaubergrad:
+		<select id="cp-spell-level">
+		  <option value="0">Zaubertrick</option>
+		  <option value="1">1. Grad</option>
+		  <option value="2">2. Grad</option>
+		  <option value="3">3. Grad</option>
+		  <option value="4">4. Grad</option>
+		  <option value="5">5. Grad</option>
+		  <option value="6">6. Grad</option>
+		  <option value="7">7. Grad</option>
+		  <option value="8">8. Grad</option>
+		  <option value="9">9. Grad</option>
+	  </select>
+      </label>
+      <label>Zauberzeit:
+		<input type="text" id="cp-spell-time" placeholder="1 Aktion">
+      </label>
+      <label>Wirkungsdauer:
+		<input type="text" id="cp-spell-duration" placeholder="1 Minute">
+      </label>
+      <label>Reichweite:
+		<select id="cp-range-type">\n
+		  <option value="linie">Linie</option>
+		  <option value="beruehrung">Berührung</option>
+		  <option value="radius">Radius</option>
+		  <option value="trichter">Trichter</option>
+		  <option value="wuerfel">Würfel</option>
+		  <option value="selbst">Selbst</option>
+		  <option value="vonselbst">Von Selbst</option>
+		</select>
+		<input type="text" id="cp-range-meters" placeholder="Meter">
+      </label>
+      <label>Hintergrundbild (URL):
+		<input type="text" id="cp-bg-image" placeholder="Optional">
+      </label>
+      <fieldset>
+		<legend>Komponenten</legend>
+		<label><input type="checkbox" id="cp-verbal"> Verbal</label>
+		<label><input type="checkbox" id="cp-gestural"> Gestisch</label>
+		<label><input type="checkbox" id="cp-material"> Material</label>
+      </fieldset>
+      <fieldset>
+		<legend>Klassen</legend>
+		<!-- Die Werte dienen als Bezeichner für die Klassen-Icons -->
+		<label><input type="checkbox" class="cp-class" value="artificer"> Artificer</label>
+		<label><input type="checkbox" class="cp-class" value="bard"> Barde</label>
+		<label><input type="checkbox" class="cp-class" value="cleric"> Kleriker</label>
+		<label><input type="checkbox" class="cp-class" value="druid"> Druide</label>
+		<label><input type="checkbox" class="cp-class" value="wizard"> Magier</label>
+		<label><input type="checkbox" class="cp-class" value="paladin"> Paladin</label>
+		<label><input type="checkbox" class="cp-class" value="ranger"> Waldläufer</label>
+		<label><input type="checkbox" class="cp-class" value="warlock"> Hexenmeister</label>
+		<label><input type="checkbox" class="cp-class" value="sorcerer"> Zauberer</label>
+      </fieldset>
+      <fieldset>
+		<legend>Besonderheiten</legend>
+		<label><input type="checkbox" id="cp-sight"> Sichtkontakt</label>
+		<label><input type="checkbox" id="cp-ritual"> Ritual</label>
+		<label><input type="checkbox" id="cp-concentration"> Konzentration</label>
+      </fieldset>
+      <button id="cp-save-spell">Zauber speichern</button>
+      <button id="cp-delete-last">Letzte Karte löschen</button>
+      <button id="cp-print-spells">Drucken</button>
+	</div>
+
+	<!-- Generierte Karten (rechts) -->
+	<div class="saved-container" id="saved-spells"></div>
+  </div>
+
+  <script>
+	  // Grenze für Beschreibung, ab der eine zweite Karte erstellt wird (anpassbar)
+	  const maxDescLength = 610;
+	  // Mapping für Schul-Icons
+const schoolIcons = {
+  bann: 'https://i.imgur.com/85svaPk.png',
+  beschwoerung: 'https://i.imgur.com/BmOE5id.png',
+  erkenntnis: 'https://i.imgur.com/6XF6Emh.png',
+  hervorrufung: 'https://i.imgur.com/avl8ws7.png',
+  illusion: 'https://i.imgur.com/yTeDLKg.png',
+  nekromantie: 'https://i.imgur.com/eYhSf7N.png',
+  verwandlung: 'https://i.imgur.com/zWYulH9.png',
+  verzauberung: 'https://i.imgur.com/o1hzrUR.png'
+};
+	  
+// Mapping für Level-Icons
+const levelIcons = {
+  0: 'https://i.imgur.com/HH5l0tO.png',
+  1: 'https://i.imgur.com/kBM5pD5.png',
+  2: 'https://i.imgur.com/lnxMgVj.png',
+  3: 'https://i.imgur.com/XjDvmn3.png',
+  4: 'https://i.imgur.com/CW7mYLB.png',
+  5: 'https://i.imgur.com/WUpFeWq.png',
+  6: 'https://i.imgur.com/QJ9J2Kg.png',
+  7: 'https://i.imgur.com/zgc2Rca.png',
+  8: 'https://i.imgur.com/GJLcoHj.png',
+  9: 'https://i.imgur.com/Jgn8YVg.png'
+};
+	  
+	  // Mapping für Klassen-Icons (wird später im Klassenbereich genutzt)\n
+const classIcons = {
+  artificer: 'https://i.imgur.com/j5bOYzj.png',
+  bard: 'https://i.imgur.com/bSRUkMn.png',
+  cleric: 'https://i.imgur.com/aPvoQlw.png',
+  druid: 'https://i.imgur.com/QYjM327.png',
+  wizard: 'https://i.imgur.com/DGk0TuV.png',
+  paladin: 'https://i.imgur.com/jvHTz0F.png',
+  ranger: 'https://i.imgur.com/yeAYmkN.png',
+  warlock: 'https://i.imgur.com/33gmCKu.png',
+  sorcerer: 'https://i.imgur.com/T9y379V.png'
+	  };
+	  
+	  // Mapping für Reichweiten-Icons – richtiges Format, ohne Bindestrich
+const rangeTypeIcons = {
+  linie: 'https://i.imgur.com/R5vYvf1.png',
+  beruehrung: 'https://i.imgur.com/SvTORz7.png',
+  radius: 'https://i.imgur.com/6wZaDTa.png',
+  trichter: 'https://i.imgur.com/EKKCLOa.png',
+  wuerfel: 'https://i.imgur.com/nNZxZkU.png',
+  selbst: 'https://i.imgur.com/pjnGGno.png',
+  vonselbst: 'https://i.imgur.com/bTDeWhn.png'
+};
+	  
+	// Funktion zur Generierung einer oder mehrerer Karten (bei zu langer Beschreibung)
+	function generateSpellCards() {
+      const spellName = document.getElementById('cp-spell-name').value;
+      const spellDesc = document.getElementById('cp-spell-description').value;
+      const spellSchool = document.getElementById('cp-spell-school').value;
+      const spellLevel = document.getElementById('cp-spell-level').value;
+      const spellTime = document.getElementById('cp-spell-time').value;
+      const spellDuration = document.getElementById('cp-spell-duration').value;
+      const rangeType = document.getElementById('cp-range-type').value;
+      const rangeMeters = document.getElementById('cp-range-meters').value;
+      const bgImage = document.getElementById('cp-bg-image').value;
+      
+      const compVerbal = document.getElementById('cp-verbal').checked;
+      const compGestural = document.getElementById('cp-gestural').checked;
+      const compMaterial = document.getElementById('cp-material').checked;
+      
+      const classCheckboxes = document.querySelectorAll('.cp-class');
+      let selectedClasses = '';
+      const specialSight = document.getElementById('cp-sight').checked;
+      const specialRitual = document.getElementById('cp-ritual').checked;
+      const specialConcentration = document.getElementById('cp-concentration').checked;
+      
+      const bgStyle = bgImage ? `background-image: url('${bgImage}'); background-size: cover;` : '';
+      
+      // Header mit Schule, Name und Level\n
+const headerHTML = `
+	  <div class="card-header">
+		<img class="icon-school" src="${schoolIcons[spellSchool]}" alt="Schule">
+		<h3 class="spell-name">${spellName}</h3>
+		<img class="icon-level" src="${levelIcons[spellLevel]}" alt="Level">
+	  </div>
+`;
+      
+// Generiere die Klassen-Icons; (Diese Schleife wird redundant sein, wenn selectedClasses bereits erstellt wurde, aber bleibt erhalten)\n
+  classCheckboxes.forEach(cb => {
+  const url = classIcons[cb.value];
+  if (cb.checked) {
+	selectedClasses += `<img class="icon" src="${url}" alt="${cb.value}">`;
+  } else {
+	selectedClasses += `<img class="icon transparent" src="${url}" alt="${cb.value}">`;
+  }
+});
+      
+      // Details (Zeit, Dauer, Reichweite, Komponenten, Besonderheiten)
+      const detailsHTML = `
+		<div class="row">
+		  <div>
+			<img class="icon-time" src="https://i.imgur.com/kBP0E4X.png" alt="Zeit">
+			<span>${spellTime}</span>
+		  </div>
+		  <div class="special-icons">
+			${specialRitual ? '<img class="icon-special" src="https://i.imgur.com/rdE00bN.png" alt="Ritual">' : ''}
+			${specialConcentration ? '<img class="icon-special" src="https://i.imgur.com/XAmv07r.png" alt="Konzentration">' : ''}
+		  </div>
+		  <div>
+			<img class="icon-duration" src="https://i.imgur.com/ygLm6sA.png" alt="Dauer">
+			<span>${spellDuration}</span>
+		  </div>
+		</div>
+		<div class="row">
+		  <div>
+			<img class="icon-range" src="${rangeTypeIcons[rangeType]}" alt="Reichweite">
+			<span>${rangeMeters}</span>
+		  </div>
+		  <div class="special-icons">
+			${specialSight ? '<img class="icon-special" src="https://i.imgur.com/YKUHl4K.png" alt="Sichtkontakt">' : ''}
+		  </div>
+		  <div>
+			${compVerbal ? '<img class="icon-verbal" src="https://i.imgur.com/PD1BBkM.png" alt="Verbal">' : '<img class="icon-verbal transparent\" src="https://i.imgur.com/PD1BBkM.png" alt="Verbal">'}
+			${compGestural ? '<img class="icon-gestural" src="https://i.imgur.com/ljyE699.png" alt="Gestisch">' : '<img class="icon-gestural transparent" src="https://i.imgur.com/ljyE699.png" alt="Gestisch">'}
+	        ${compMaterial ? '<img class="icon-material" src="https://i.imgur.com/K3OyDwO.png" alt="Material">' : '<img class="icon-material transparent" src=https://i.imgur.com/K3OyDwO.png" alt="Material">'}
+	      </div>
+	    </div>
+      `;
+      
+      // Bei zu langer Beschreibung, splite sie
+      let card1Desc = spellDesc;
+      let card2Desc = '';
+      if(spellDesc.length > maxDescLength) {
+	    card1Desc = spellDesc.substring(0, maxDescLength);
+	    card2Desc = spellDesc.substring(maxDescLength);
+      }
+      
+      const card1HTML = `
+	    <div class="card-container" style=\"${bgStyle}\">
+	      ${headerHTML}
+	      ${detailsHTML}
+	      <div class="divider"></div>
+	      <p class="description">${card1Desc}</p>
+	      <div class="class-icons-container">${selectedClasses}</div>
+	    </div>
+      `;
+      
+      let cards = [card1HTML];
+      if(card2Desc) {
+		const card2HTML = `
+		  <div class="card-container" style="${bgStyle}">
+			${headerHTML}
+			<div class="divider"></div>
+			<p>${card2Desc}</p>
+			<div class="class-icons-container">${selectedClasses}</div>
+		  </div>
+		`;
+		cards.push(card2HTML);
+      }
+      
+      return cards;
+	}
+	  
+	// Event-Handler für \"Zauber speichern\"
+	document.getElementById('cp-save-spell').addEventListener('click', function() {
+      const cards = generateSpellCards();
+      cards.forEach(cardHTML => {
+		const cardWrapper = document.createElement('div');
+		cardWrapper.innerHTML = cardHTML;
+		document.getElementById('saved-spells').appendChild(cardWrapper);
+      });
+	});
+	  
+	// Event-Handler für \"Letzte Karte löschen\"\n
+	document.getElementById('cp-delete-last').addEventListener('click', function() {
+      const saved = document.getElementById('saved-spells');
+      if(saved.lastElementChild) {
+		saved.removeChild(saved.lastElementChild);
+      }
+	});
+	  
+	// Event-Handler für \"Drucken\"\n
+	document.getElementById('cp-print-spells').addEventListener('click', function() {
+      window.print();
+	});
+  </script>
+</body>
+</html>
+
