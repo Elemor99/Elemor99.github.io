@@ -1,451 +1,315 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>D&D Zauberkarten Generator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biomagnete</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
+	  color: #ffffff;
+      line-height: 1.2;
+      margin-top: 20px;
+	  margin-bottom: 20px;
+	  margin-left: 40px;
+	  margin-right: 20px;
+      max-width: 900px;
+	  background: #000000;
     }
-    .container {
-      display: flex;
-      align-items: flex-start;
-      gap: 20px;
-      padding: 20px;
+    h1, h2, h3 {
+      margin-top: 30px;
+	  color: #00ff00;
     }
-    .card-container p {
-  font-size: 12px;
-  line-height: 1.4;
-}
-.row span {
-  font-size: 12px;
-}
-    .control-panel {
-      width: 300px;
+    nav {
+      margin-bottom: 20px;
     }
-    .control-panel label {
-      display: block;
-      margin-bottom: 5px;
-    }
-    .control-panel input[type="text"],
-    .control-panel textarea,
-    .control-panel select {
-      width: 100%;
-      box-sizing: border-box;
-      margin-bottom: 5px;
-      font-size: 16px;
-    }
-    .control-panel button {
-      margin-top: 10px;
-      margin-right: 5px;
-    }
-    
-    .saved-container {
-      flex: 1;
-    }
-    #saved-spells {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    
-    .card-container { 
-      width: 7cm; 
-      min-height: 9.9cm; 
-      border: 1px solid black; 
-      padding: 5px; 
-      position: relative; 
-      box-sizing: border-box;
-      background: #fff;
-    }
+	.nav-item {
+		position: relative;
+		display: inline-block;
+	}
+	.section {
+		display: none;
+		position: absolute;
+		top: 100%; /* below the link */
+		left: 0;
+		background: #000000;
+		padding: 10px;
+		border: 2px solid #ccc;
+		border-color: #00ff00;
+		z-index: 1000;
+	}
 
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 5px;
+	.nav-item:hover .section {
+		display: inline-block;
+		padding: 10px;
+		color: #00ff00;
+	}
+    nav a {
+      margin-right: 10px;
+      text-decoration: none;
+      color: #0066cc;
     }
+    nav a:hover {
+      text-decoration: none;
+	  color: #00ff00;
+    }
+    .tooltip {
+      border-bottom: 1px dotted #000;
+      cursor: help;
+      position: relative;
+    }
+	pre {
+		background: #f4f4f4;
+		font-family: fantasy
+		padding: 8px;
+		overflow-x: auto;
+		position: relative;
+		margin-bottom: 10px;
+		margin-left: 20px;
+	}
+	a:link {
+		color: #008900;
+		background-color: transparent;
+		border-color: #00ff00;
+		text-decoration: underline;
+	}
 
-    .icon-school {
-      width: 30px;
-      height: 30px;
-    }
+	a:visited {
+		color: #004e00;
+		background-color: transparent;
+		text-decoration: none;
+	}
 
-    .icon-level {
-      width: 30px;
-      height: 30px;
-    }
-
-    .spell-name {
-      font-size: 18px;
-      text-align: center;
-      flex: 1;
-      margin: 0 5px;
-      word-wrap: break-word;
-    }
-    
-    .row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 1px;
-      line-height: 1;
-    }
-    .row > div {
-      display: flex;
-      align-items: center;
-      gap: 5px; 
-    }
-    
-    .icon-time {
-      width: 18px;
-      height: 18px;
-    }
-    .icon-duration {
-      width: 18px;
-      height: 18px;
-    }
-    .icon-range {
-      width: 23px;
-      height: 23px;
-    }
-    .icon-verbal {
-      width: 20px;
-      height: 10px;
-    }
-    .icon-gestural {
-      width: 18px;
-      height: 18px;
-    }
-    .icon-material {
-      width: 21px;
-      height: 21px;
-    }
-    .icon-special {
-      width: 20px;
-      height: 20px;
-    }
-    
-    .class-icons-container {
-      position: absolute;
-      bottom: 5px;
-      left: 0;
-      width: 100%;
-      text-align: center;
-    }
-    .class-icons-container img {
-      width: 20px;
-      height: 20px;
-      margin: 0 2px;
-    }
-    .transparent {
-      opacity: 0.3;
-    }
-    
-    .divider {
-      border-top: 1px solid black;
-      margin: 5px 0;
-    }
-    .description {
-    white-space: pre-line;
-    }
-@media print {
-  body * {
-    visibility: hidden;
-  }
-  #saved-spells, #saved-spells * {
-		visibility: visible;
-	  }
-	  #saved-spells {
-		  display: grid;
-		  grid-template-columns: repeat(3, 7cm);
-		  grid-template-rows: repeat(3, 9.9cm);
-		  gap: 0.001cm;
-		  position: absolute;
-		  top: 0;
-		  left: 0;
-		  width: 21cm;
-		  height: 29.7cm;
-	  }
-	  
-  .card-container .description:before {
-    content: '';
-    display: block;
-    border-top: 1px solid black;
-    margin-bottom: 1px;
-  }
-	  .card-container {
-		  border: 3px solid black;
-		  page-break-inside: avoid;
-	  }
+	a:hover {
+		color: #00ff00;
+		background-color: transparent;
+		text-decoration: underline;
 	}
   </style>
 </head>
+<script>
+
+</script>
 <body>
-  <div class="container">
-    <!-- Bedienfeld (links) -->
-	<div class="control-panel">
-	  <h2>Bedienfeld</h2>
-      <label>Name des Zaubers:
-		<input type="text" id="cp-spell-name">
-      </label>
-      <label>Beschreibung:
-		<textarea id="cp-spell-description"></textarea>
-      </label>
-      <label>Schule der Magie:
-		<select id="cp-spell-school">
-		  <option value="bann">Bann</option>
-		  <option value="beschwoerung">Beschwörung</option>
-		  <option value="erkenntnis">Erkenntnis</option>
-		  <option value="hervorrufung">Hervorrufung</option>
-		  <option value="illusion">Illusion</option>
-		  <option value="nekromantie">Nekromantie</option>
-		  <option value="verwandlung">Verwandlung</option>
-		  <option value="verzauberung">Verzauberung</option>
-		</select>
-	  </label>
-      <label>Zaubergrad:
-		<select id="cp-spell-level">
-		  <option value="0">Zaubertrick</option>
-		  <option value="1">1. Grad</option>
-		  <option value="2">2. Grad</option>
-		  <option value="3">3. Grad</option>
-		  <option value="4">4. Grad</option>
-		  <option value="5">5. Grad</option>
-		  <option value="6">6. Grad</option>
-		  <option value="7">7. Grad</option>
-		  <option value="8">8. Grad</option>
-		  <option value="9">9. Grad</option>
-	  </select>
-      </label>
-      <label>Zeitaufwand:
-		<input type="text" id="cp-spell-time" placeholder="1 Aktion">
-      </label>
-      <label>Wirkungsdauer:
-		<input type="text" id="cp-spell-duration" placeholder="1 Minute">
-      </label>
-      <label>Reichweite:
-		<select id="cp-range-type">\n
-		  <option value="linie">Linie</option>
-		  <option value="beruehrung">Berührung</option>
-		  <option value="radius">Radius</option>
-		  <option value="kegel">Kegel</option>
-		  <option value="wuerfel">Würfel</option>
-		  <option value="selbst">Selbst</option>
-		  <option value="vonselbst">Von Selbst</option>
-		</select>
-		<input type="text" id="cp-range-meters" placeholder="Meter">
-      </label>
-      <label>Hintergrundbild (URL):
-		<input type="text" id="cp-bg-image" placeholder="Optional">
-      </label>
-      <fieldset>
-		<legend>Komponenten</legend>
-		<label><input type="checkbox" id="cp-verbal"> Verbal</label>
-		<label><input type="checkbox" id="cp-gestural"> Gestisch</label>
-		<label><input type="checkbox" id="cp-material"> Material</label>
-      </fieldset>
-      <fieldset>
-		<legend>Klassen</legend>
-		<label><input type="checkbox" class="cp-class" value="artificer"> Artificer</label>
-		<label><input type="checkbox" class="cp-class" value="bard"> Barde</label>
-		<label><input type="checkbox" class="cp-class" value="cleric"> Kleriker</label>
-		<label><input type="checkbox" class="cp-class" value="druid"> Druide</label>
-		<label><input type="checkbox" class="cp-class" value="wizard"> Magier</label>
-		<label><input type="checkbox" class="cp-class" value="paladin"> Paladin</label>
-		<label><input type="checkbox" class="cp-class" value="ranger"> Waldläufer</label>
-		<label><input type="checkbox" class="cp-class" value="warlock"> Hexenmeister</label>
-		<label><input type="checkbox" class="cp-class" value="sorcerer"> Zauberer</label>
-      </fieldset>
-      <fieldset>
-		<legend>Besonderheiten</legend>
-		<label><input type="checkbox" id="cp-sight"> Sichtkontakt</label>
-		<label><input type="checkbox" id="cp-ritual"> Ritual</label>
-		<label><input type="checkbox" id="cp-concentration"> Konzentration</label>
-      </fieldset>
-      <button id="cp-save-spell">Zauber speichern</button>
-      <button id="cp-delete-last">Letzte Karte löschen</button>
-      <button id="cp-print-spells">Drucken</button>
-	</div>
 
-	<div class="saved-container" id="saved-spells"></div>
+<h1>Biomagnete Anbieter</h1>
+
+<nav>
+  <div class="nav-item">
+    <h2><a href="#step1">Office</a></h2>
   </div>
-
-  <script>
-	  const maxDescLength = 610;
-const schoolIcons = {
-  bann: 'https://i.imgur.com/85svaPk.png',
-  beschwoerung: 'https://i.imgur.com/BmOE5id.png',
-  erkenntnis: 'https://i.imgur.com/6XF6Emh.png',
-  hervorrufung: 'https://i.imgur.com/avl8ws7.png',
-  illusion: 'https://i.imgur.com/yTeDLKg.png',
-  nekromantie: 'https://i.imgur.com/eYhSf7N.png',
-  verwandlung: 'https://i.imgur.com/zWYulH9.png',
-  verzauberung: 'https://i.imgur.com/o1hzrUR.png'
-};
-	  
-const levelIcons = {
-  0: 'https://i.imgur.com/HH5l0tO.png',
-  1: 'https://i.imgur.com/kBM5pD5.png',
-  2: 'https://i.imgur.com/lnxMgVj.png',
-  3: 'https://i.imgur.com/XjDvmn3.png',
-  4: 'https://i.imgur.com/CW7mYLB.png',
-  5: 'https://i.imgur.com/WUpFeWq.png',
-  6: 'https://i.imgur.com/QJ9J2Kg.png',
-  7: 'https://i.imgur.com/zgc2Rca.png',
-  8: 'https://i.imgur.com/GJLcoHj.png',
-  9: 'https://i.imgur.com/Jgn8YVg.png'
-};
-	  
-const classIcons = {
-  artificer: 'https://i.imgur.com/j5bOYzj.png',
-  bard: 'https://i.imgur.com/bSRUkMn.png',
-  cleric: 'https://i.imgur.com/aPvoQlw.png',
-  druid: 'https://i.imgur.com/QYjM327.png',
-  wizard: 'https://i.imgur.com/DGk0TuV.png',
-  paladin: 'https://i.imgur.com/jvHTz0F.png',
-  ranger: 'https://i.imgur.com/yeAYmkN.png',
-  warlock: 'https://i.imgur.com/33gmCKu.png',
-  sorcerer: 'https://i.imgur.com/T9y379V.png'
-	  };
-	  
-const rangeTypeIcons = {
-  linie: 'https://i.imgur.com/R5vYvf1.png',
-  beruehrung: 'https://i.imgur.com/SvTORz7.png',
-  radius: 'https://i.imgur.com/6wZaDTa.png',
-  kegel: 'https://i.imgur.com/EKKCLOa.png',
-  wuerfel: 'https://i.imgur.com/nNZxZkU.png',
-  selbst: 'https://i.imgur.com/pjnGGno.png',
-  vonselbst: 'https://i.imgur.com/bTDeWhn.png'
-};
-	  
-	function generateSpellCards() {
-      const spellName = document.getElementById('cp-spell-name').value;
-      const spellDesc = document.getElementById('cp-spell-description').value;
-      const spellSchool = document.getElementById('cp-spell-school').value;
-      const spellLevel = document.getElementById('cp-spell-level').value;
-      const spellTime = document.getElementById('cp-spell-time').value;
-      const spellDuration = document.getElementById('cp-spell-duration').value;
-      const rangeType = document.getElementById('cp-range-type').value;
-      const rangeMeters = document.getElementById('cp-range-meters').value;
-      const bgImage = document.getElementById('cp-bg-image').value;
-      
-      const compVerbal = document.getElementById('cp-verbal').checked;
-      const compGestural = document.getElementById('cp-gestural').checked;
-      const compMaterial = document.getElementById('cp-material').checked;
-      
-      const classCheckboxes = document.querySelectorAll('.cp-class');
-      let selectedClasses = '';
-      const specialSight = document.getElementById('cp-sight').checked;
-      const specialRitual = document.getElementById('cp-ritual').checked;
-      const specialConcentration = document.getElementById('cp-concentration').checked;
-      
-      const bgStyle = bgImage ? `background-image: url('${bgImage}'); background-size: cover;` : '';
-      
-const headerHTML = `
-	  <div class="card-header">
-		<img class="icon-school" src="${schoolIcons[spellSchool]}" alt="Schule">
-		<h3 class="spell-name">${spellName}</h3>
-		<img class="icon-level" src="${levelIcons[spellLevel]}" alt="Level">
-	  </div>
-`;
-      
-  classCheckboxes.forEach(cb => {
-  const url = classIcons[cb.value];
-  if (cb.checked) {
-	selectedClasses += `<img class="icon" src="${url}" alt="${cb.value}">`;
-  } else {
-	selectedClasses += `<img class="icon transparent" src="${url}" alt="${cb.value}">`;
-  }
-});
-      
-      const detailsHTML = `
-		<div class="row">
-		  <div>
-			<img class="icon-time" src="https://i.imgur.com/kBP0E4X.png" alt="Zeit">
-			<span>${spellTime}</span>
-		  </div>
-		  <div class="special-icons">
-			${specialRitual ? '<img class="icon-special" src="https://i.imgur.com/rdE00bN.png" alt="Ritual">' : ''}
-			${specialConcentration ? '<img class="icon-special" src="https://i.imgur.com/XAmv07r.png" alt="Konzentration">' : ''}
-		  </div>
-		  <div>
-			<img class="icon-duration" src="https://i.imgur.com/ygLm6sA.png" alt="Dauer">
-			<span>${spellDuration}</span>
-		  </div>
+  <div class="nav-item">
+    <h2><a href="#step2">Windows 11</a></h2>
+	    <div class="section">
+		<a href="#USB">Bootfähiger USB-Stick</a>
+			<div class="section">
+			<a href="#Installation">Installation</a>
+			</div>
 		</div>
-		<div class="row">
-		  <div>
-			<img class="icon-range" src="${rangeTypeIcons[rangeType]}" alt="Reichweite">
-			<span>${rangeMeters}</span>
-		  </div>
-		  <div class="special-icons">
-			${specialSight ? '<img class="icon-special" src="https://i.imgur.com/YKUHl4K.png" alt="Sichtkontakt">' : ''}
-		  </div>
-		  <div>
-			${compVerbal ? '<img class="icon-verbal" src="https://i.imgur.com/PD1BBkM.png" alt="Verbal">' : '<img class="icon-verbal transparent\" src="https://i.imgur.com/PD1BBkM.png" alt="Verbal">'}
-			${compGestural ? '<img class="icon-gestural" src="https://i.imgur.com/ljyE699.png" alt="Gestisch">' : '<img class="icon-gestural transparent" src="https://i.imgur.com/ljyE699.png" alt="Gestisch">'}
-	        ${compMaterial ? '<img class="icon-material" src="https://i.imgur.com/K3OyDwO.png" alt="Material">' : '<img class="icon-material transparent" src=https://i.imgur.com/K3OyDwO.png" alt="Material">'}
-	      </div>
-	    </div>
-      `;
-      
-      let card1Desc = spellDesc;
-      let card2Desc = '';
-      if(spellDesc.length > maxDescLength) {
-	    card1Desc = spellDesc.substring(0, maxDescLength);
-	    card2Desc = spellDesc.substring(maxDescLength);
-      }
-      
-      const card1HTML = `
-	    <div class="card-container" style=\"${bgStyle}\">
-	      ${headerHTML}
-	      ${detailsHTML}
-	      <div class="divider"></div>
-	      <p class="description">${card1Desc}</p>
-	      <div class="class-icons-container">${selectedClasses}</div>
-	    </div>
-      `;
-      
-      let cards = [card1HTML];
-      if(card2Desc) {
-		const card2HTML = `
-		  <div class="card-container" style="${bgStyle}">
-			${headerHTML}
-			<div class="divider"></div>
-			<p class="description">${card2Desc}</p>
-			<div class="class-icons-container">${selectedClasses}</div>
-		  </div>
-		`;
-		cards.push(card2HTML);
-      }
-      
-      return cards;
-	}
-	  
-	document.getElementById('cp-save-spell').addEventListener('click', function() {
-      const cards = generateSpellCards();
-      cards.forEach(cardHTML => {
-		const cardWrapper = document.createElement('div');
-		cardWrapper.innerHTML = cardHTML;
-		document.getElementById('saved-spells').appendChild(cardWrapper);
-      });
-	});
-	  
-	document.getElementById('cp-delete-last').addEventListener('click', function() {
-      const saved = document.getElementById('saved-spells');
-      if(saved.lastElementChild) {
-		saved.removeChild(saved.lastElementChild);
-      }
-	});
-	  
-	document.getElementById('cp-print-spells').addEventListener('click', function() {
-      window.print();
-	});
-  </script>
+  </div>
+  <div class="nav-item">
+    <h2><a href="#advanced">Erweitert</a></h2>
+    <div class="section">
+      <a href="#offline">Offline Account</a>
+		<div class="section">
+			<a href="#debloat">Debloat</a>
+			<div class="section">
+				<a href="#tools">Tools</a>
+			</div>
+		</div>
+	</div>
+	</div>
+</nav>
+
+
+
+<h2 id="step1">Office</h2>
+<h3>Gewünschte Office Version herunterladen:</h3>
+	<p><a href="https://c2rsetup.officeapps.live.com/c2r/download.aspx?ProductreleaseID=Home2024Retail&platform=x64&language=de-de&version=O16GA" target="_blank">Home2024Retail</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp Excel, OneNote, PowerPoint, Word, OneDrive
+	<p><a href="https://c2rsetup.officeapps.live.com/c2r/download.aspx?ProductreleaseID=HomeBusiness2024Retail&platform=x64&language=de-de&version=O16GA" target="_blank">HomeBusiness2024Retail</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp Excel, OneNote, Outlook, PowerPoint, Word, OneDrive<p>
+	<p><a href="https://c2rsetup.officeapps.live.com/c2r/download.aspx?ProductreleaseID=ProPlus2024Retail&platform=x64&language=de-de&version=O16GA" target="_blank">ProPlus2024Retail</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp Access, Excel, OneNote, Outlook, PowerPoint, Word, OneDrive<p>
+<p>
+
+<h3>Admin Terminal öffnen (Tastenkombi: WIN X)</h3>
+</p>
+
+<p>Windows Lizenz kann ebenfalls durch dieses Script aktiviert werden
+
+<h1 id="step2">Windows 11 installieren</h1>
+<h3>Benötigt:</h3>
+<p><a href="https://zerofs.link/f/kRY3YzJsSePgW9suysJWEV/" target="_blank"><span class="tooltip" title="direkter download Link für die neueste deutsche Version">Windows ISO Datei</span></a>
+<p id="rufus"><a href="https://github.com/pbatard/rufus/releases/download/v4.14/rufus-4.14.exe" target="_blank"><span class="tooltip" title="zum Formatieren des USB-Sticks">Rufus</span></a>
+<p>USB-Stick, mindestens 8GB (alle Daten darauf werden gelöscht!)
+
+<h3>Vor Installation alle wichtigen Daten extern absichern</h3>
+<h2 id="USB">Bootfähigen USB-Stick erstellen</h2>
+<p>Rufus öffnen </p>
+<img src="https://rufus.ie/pics/screenshot1_de.png" alt="Installation wizard" style="max-width:70%; height:auto;"/>
+<ol>
+<li><p>Im Menü "Laufwerk" den USB-Stick auswählen
+<li><p>Unter "Startart" die heruntergeladene Windows 11 ISO Datei auswählen
+<li><p>Rufus konfiguriert automatisch die nötigen Formatierungseinstellungen
+<li><p>"Start"
+<li><p>Der Prozess kann einige Minuten dauern. Sobald der Status "Fertig" angezeigt wird, kann das Programm geschlossen werden
+</ol>
+
+<h2 id="Installation"> Installation </h2>
+<p>Alle externen Speicher bis auf den bootfähigen USB-Stick entfernen
+<p>PC neustarten, beim Neustart F11 oder F12 (modellabhängig) gedrückt lassen, um ins Bootmenü zu gelangen</p>
+<img src="https://ittweak.de/wp-content/uploads/2021/05/abgesicherten-modus-windows-10-starten-erreichen-aktivieren-optionen-problembehandlung-700x392.webp"/>
+
+<ol>
+<li><p>"Ein Gerät verwenden"</p>
+<li><p>Bootfähigen USB Stick auswählen
+<li><p>Sprache und Tastatur auswählen → Weiter
+<li><p>"Jetzt installieren"
+<li><p>„Ich habe keinen Product Key“
+<li><p>Die Ziel-Festplatte auswählen (meist „Nicht zugewiesener Speicherplatz“)
+<li><p>„Benutzerdefiniert: nur Windows installieren“ wählen
+</ol>
+<p>Nach der Installation mit <a href="#MAS">MAS</a> aktivieren
+
+
+<h1 id="advanced">Erweiterte Einstellungen</h1>
+<h2 id="offline">Ohne Microsoft Account anmelden</h2>
+<p>In Rufus kann die ISO Datei vor dem Formatieren konfiguriert werden</p>
+<img src="https://rufus.ie/pics/screenshot4_en.png" style="max-width:70%; height:auto;"/>
+<p>"Voraussetzungen für Online-Account umgehen" und "Datensammlung deaktivieren" ist empfohlen</p>
+
+<h1 id="debloat">Debloaten (unnötige Programme, Datensammlung und KI-Features deaktivieren)</h1>
+<p>Nach der Installation Admin Terminal öffnen</p>
+<pre>
+<code id="installCommand">
+& ([scriptblock]::Create((irm "https://debloat.raphi.re/")))
+</code>
+<button class="copy-btn" onclick="copyCode('installCommand')">Code kopieren</button>
+</pre>
+<img src="https://github.com/Raphire/Win11Debloat/raw/master/Assets/Images/menu.png" style="max-width:70%; height:auto;"/>
+<p><a href="https://github.com/Raphire/Win11Debloat/wiki/" target="_blank">Wiki aller möglichen Einstellungen</span></a>
+<h2>Empfehlung:</h2>
+<p> Standarteinstellungen beibehalten
+<p> KI-Features deaktivieren (VOR ALLEM WINIDOWS RECALL)
+
+<h1 id="tools"> Weitere Tools </h1>
+<p><a href="https://windhawk.net/" target="_blank">Windhawk</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp Verschiedene Mods zur eigenen Gestaltung von Win11
+<ol>
+<p>Empfohlene Mods:<p>
+<p><a href="https://windhawk.net/mods/explorer-context-menu-classic" target="_blank"><span class="tooltip" title="scheiß neues Scheißmenü zeigt nur die Hälfte der Funktionen">Classic context menu</a>
+<p><a href="https://windhawk.net/mods/windows-11-taskbar-styler" target="_blank">Taskbar Styler</a>
+<p><a href="https://windhawk.net/mods/windows-11-start-menu-styler" target="_blank">Start Menu Styler</a>
+</ol>
+<br>
+<p><span class="tooltip" title="falls du das Win10 Startmenü vermisst">Start 11</span>&nbsp;&nbsp;&nbsp;<span class="tooltip" title="oder du sprichst mich darauf an">(Bezahlt)</span>
+<br>
+<p><a href="https://github.com/microsoft/PowerToys/releases/download/v0.99.1/PowerToysSetup-0.99.1-arm64.exe" target="_blank"><span class="tooltip" title="direct Download">Powertoys</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; erweiterte Funktionalität <a href="https://learn.microsoft.com/en-us/windows/powertoys/" target="_blank">(Wiki)</a>
+<br>
+<br>
+<br>
+<br>
+<p><a href="#top">Zurück zum Seitenanfang</a></p>
+
 </body>
 </html>
+<div class="toc-template">
+    <div class="toc-template-layout">
+        
+        <nav class="toc-nav" aria-label="Table of contents">
+            <h2>On this page</h2>
+            <ul id="toc-list">
+                <li><a href="#ingredients">The Ingredients</a>
+                    <ul>
+                        <li><a href="#tangible">Tangible Goods</a></li>
+                        <li><a href="#intangible">Intangible Concepts</a></li>
+                    </ul>
+                </li>
+                <li><a href="#preparation">The Preparation</a></li>
+                <li><a href="#the-bake">The Bake</a></li>
+                <li><a href="#presentation">The Presentation</a></li>
+            </ul>
+        </nav>
+    
+        <main class="article-content">
+            <h1>A Guide to Baking an Existential Crisis Cake</h1>
+            <p class="subtitle">A surprisingly bitter dessert for the discerning palate.</p>
 
+            <section>
+                <h2 id="ingredients">The Ingredients</h2>
+                <p>This is not your grandmother's recipe, unless your grandmother was a nihilist philosopher with a sweet tooth. Procuring these ingredients requires more than a trip to the supermarket. It requires introspection.</p>
+
+                <h3 id="tangible">Tangible Goods</h3>
+                <p>Begin with the basics. You will need 2 cups of all-purpose dread, 1 cup of melted ennui, and 3 eggs of mild-to-moderate disappointment. For leavening, a tablespoon of cosmic indifference is essential. Do not substitute with baking soda; the philosophical flavor profile will be completely off.</p>
+
+                <h3 id="intangible">Intangible Concepts</h3>
+                <p>Next, fold in one lingering memory of a childhood dream you have long since abandoned. Add a dash of the sudden realization that you are just a collection of star-dust on a meaningless trajectory. Sweeten to taste with the faint, persistent ringing in your ears that only you can hear.</p>
+            </section>
+
+            <section>
+                <h2 id="preparation">The Preparation</h2>
+                <p>In a large bowl, whisk the dread and ennui until they form stiff, grey peaks. In a separate bowl, beat the eggs of disappointment while staring blankly into the middle distance. Combine the two mixtures with a spatula of resignation. It is important not to over-mix. The batter should have the lumpy consistency of a Tuesday afternoon.</p>
+                <p>Gently incorporate the cosmic indifference and your chosen intangibles. You will know the batter is ready when it sighs audibly. Pour it into a poorly-greased pan, for what is baking without the Sisyphean struggle of a cake that will not release?</p>
+            </section>
+
+            <section>
+                <h2 id="the-bake">The Bake</h2>
+                <p>Preheat your oven to a vaguely unsettling temperature. Bake for what feels like an eternity, but is probably around 35 minutes. Do not check on the cake. A watched pot never boils, and a watched cake will only judge your life choices. The cake is done when a toothpick inserted into the center comes out questioning its own purpose.</p>
+            </section>
+            
+            <section>
+                <h2 id="presentation">The Presentation</h2>
+                <p>Let the cake cool on a wire rack of shattered expectations. There is no need for frosting, as the cake is already layered with a thick glaze of irony. Serve in complete silence to a room full of people checking their phones. Pairs well with lukewarm tap water and the crushing weight of your own consciousness. Enjoy?</p>
+            </section>
+        </main>
+        
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.querySelector('.toc-template');
+            if (!container) return;
+        
+            const tocLinks = container.querySelectorAll('#toc-list a');
+            const sections = [];
+
+            // Get all the sections that the TOC links point to
+            tocLinks.forEach(link => {
+                const sectionId = link.getAttribute('href').substring(1);
+                const section = document.getElementById(sectionId);
+                if(section) {
+                    sections.push(section);
+                }
+            });
+
+            if (sections.length === 0) return;
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Remove active class and aria-current from all links
+                        tocLinks.forEach(link => {
+                            link.classList.remove('active');
+                            link.removeAttribute('aria-current');
+                        });
+                        
+                        // Add active class and aria-current to the link for the intersecting section
+                        const link = container.querySelector(`#toc-list a[href="#${entry.target.id}"]`);
+                        if (link) {
+                            link.classList.add('active');
+                            link.setAttribute('aria-current', 'true');
+                        }
+                    }
+                });
+            }, {
+                rootMargin: '-50% 0px -50% 0px', // Highlights the item when it's in the middle of the screen
+                threshold: 0
+            });
+        
+            // Observe each section
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</div>
+
+</body>
+</html>
