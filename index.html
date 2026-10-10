@@ -8,12 +8,12 @@
     body {
       font-family: Arial, sans-serif;
 	  color: #ffffff;
-      line-height: 1.2;
+      line-height: 1;
       margin-top: 20px;
 	  margin-bottom: 20px;
 	  margin-left: 40px;
 	  margin-right: 20px;
-      max-width: 900px;
+      max-width: auto;
 	  background: #000000;
     }
     h1, h2, h3 {
@@ -77,7 +77,7 @@
 	a:visited {
 		color: #004e00;
 		background-color: transparent;
-		text-decoration: none;
+		text-decoration: underline;
 	}
 
 	a:hover {
@@ -85,6 +85,30 @@
 		background-color: transparent;
 		text-decoration: underline;
 	}
+  .list-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0px;
+    padding: 0;
+    margin: 0;
+  }
+
+  .list-box {
+    flex: 0 1 auto;
+    width: fit-content;
+    max-width: 100%;
+    padding: 5px;
+    margin: 0;
+    border: 1px solid #ccc;
+	border-color: #00ff00;
+    box-sizing: border-box;
+  }
+
+  .list-box ul {
+    padding-left: 24px;
+  }
+
   </style>
 </head>
 <script>
@@ -96,118 +120,399 @@
 
 <nav>
   <div class="nav-item">
-    <h2><a href="#step1">Office</a></h2>
-  </div>
-  <div class="nav-item">
-    <h2><a href="#step2">Windows 11</a></h2>
-	    <div class="section">
-		<a href="#USB">Bootfähiger USB-Stick</a>
-			<div class="section">
-			<a href="#Installation">Installation</a>
-			</div>
-		</div>
-  </div>
-  <div class="nav-item">
-    <h2><a href="#advanced">Erweitert</a></h2>
+    <h2><a href="#Dangerous Things">Dangerous Things</a></h2>
     <div class="section">
-      <a href="#offline">Offline Account</a>
+      <a href="#Sortiment1">Sortiment</a>
 		<div class="section">
-			<a href="#debloat">Debloat</a>
-			<div class="section">
-				<a href="#tools">Tools</a>
-			</div>
+			<a href="#Lieferung1">Lieferung</a>
 		</div>
 	</div>
+	</div>
+  <div class="nav-item">
+    <h2><a href="#Abysswalker">Abysswalker</a></h2>
+    <div class="section">
+      <a href="#Sortiment2">Sortiment</a>
+		<div class="section">
+			<a href="#Lieferung2">Lieferung</a>
+		</div>
+	</div>
+	</div>
+  <div class="nav-item">
+    <h2><a href="#Upgraded-Humans">Upgraded-Humans</a></h2>
 	</div>
 </nav>
 
 
 
-<h2 id="step1">Office</h2>
-<h3>Gewünschte Office Version herunterladen:</h3>
-	<p><a href="https://c2rsetup.officeapps.live.com/c2r/download.aspx?ProductreleaseID=Home2024Retail&platform=x64&language=de-de&version=O16GA" target="_blank">Home2024Retail</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp Excel, OneNote, PowerPoint, Word, OneDrive
-	<p><a href="https://c2rsetup.officeapps.live.com/c2r/download.aspx?ProductreleaseID=HomeBusiness2024Retail&platform=x64&language=de-de&version=O16GA" target="_blank">HomeBusiness2024Retail</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp Excel, OneNote, Outlook, PowerPoint, Word, OneDrive<p>
-	<p><a href="https://c2rsetup.officeapps.live.com/c2r/download.aspx?ProductreleaseID=ProPlus2024Retail&platform=x64&language=de-de&version=O16GA" target="_blank">ProPlus2024Retail</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp Access, Excel, OneNote, Outlook, PowerPoint, Word, OneDrive<p>
-<p>
-
-<h3>Admin Terminal öffnen (Tastenkombi: WIN X)</h3>
-</p>
-
-<p>Windows Lizenz kann ebenfalls durch dieses Script aktiviert werden
-
-<h1 id="step2">Windows 11 installieren</h1>
-<h3>Benötigt:</h3>
-<p><a href="https://zerofs.link/f/kRY3YzJsSePgW9suysJWEV/" target="_blank"><span class="tooltip" title="direkter download Link für die neueste deutsche Version">Windows ISO Datei</span></a>
-<p id="rufus"><a href="https://github.com/pbatard/rufus/releases/download/v4.14/rufus-4.14.exe" target="_blank"><span class="tooltip" title="zum Formatieren des USB-Sticks">Rufus</span></a>
-<p>USB-Stick, mindestens 8GB (alle Daten darauf werden gelöscht!)
-
-<h3>Vor Installation alle wichtigen Daten extern absichern</h3>
-<h2 id="USB">Bootfähigen USB-Stick erstellen</h2>
-<p>Rufus öffnen </p>
-<img src="https://rufus.ie/pics/screenshot1_de.png" alt="Installation wizard" style="max-width:70%; height:auto;"/>
-<ol>
-<li><p>Im Menü "Laufwerk" den USB-Stick auswählen
-<li><p>Unter "Startart" die heruntergeladene Windows 11 ISO Datei auswählen
-<li><p>Rufus konfiguriert automatisch die nötigen Formatierungseinstellungen
-<li><p>"Start"
-<li><p>Der Prozess kann einige Minuten dauern. Sobald der Status "Fertig" angezeigt wird, kann das Programm geschlossen werden
-</ol>
-
-<h2 id="Installation"> Installation </h2>
-<p>Alle externen Speicher bis auf den bootfähigen USB-Stick entfernen
-<p>PC neustarten, beim Neustart F11 oder F12 (modellabhängig) gedrückt lassen, um ins Bootmenü zu gelangen</p>
-<img src="https://ittweak.de/wp-content/uploads/2021/05/abgesicherten-modus-windows-10-starten-erreichen-aktivieren-optionen-problembehandlung-700x392.webp"/>
-
-<ol>
-<li><p>"Ein Gerät verwenden"</p>
-<li><p>Bootfähigen USB Stick auswählen
-<li><p>Sprache und Tastatur auswählen → Weiter
-<li><p>"Jetzt installieren"
-<li><p>„Ich habe keinen Product Key“
-<li><p>Die Ziel-Festplatte auswählen (meist „Nicht zugewiesener Speicherplatz“)
-<li><p>„Benutzerdefiniert: nur Windows installieren“ wählen
-</ol>
-<p>Nach der Installation mit <a href="#MAS">MAS</a> aktivieren
-
-
-<h1 id="advanced">Erweiterte Einstellungen</h1>
-<h2 id="offline">Ohne Microsoft Account anmelden</h2>
-<p>In Rufus kann die ISO Datei vor dem Formatieren konfiguriert werden</p>
-<img src="https://rufus.ie/pics/screenshot4_en.png" style="max-width:70%; height:auto;"/>
-<p>"Voraussetzungen für Online-Account umgehen" und "Datensammlung deaktivieren" ist empfohlen</p>
-
-<h1 id="debloat">Debloaten (unnötige Programme, Datensammlung und KI-Features deaktivieren)</h1>
-<p>Nach der Installation Admin Terminal öffnen</p>
-<pre>
-<code id="installCommand">
-& ([scriptblock]::Create((irm "https://debloat.raphi.re/")))
-</code>
-<button class="copy-btn" onclick="copyCode('installCommand')">Code kopieren</button>
-</pre>
-<img src="https://github.com/Raphire/Win11Debloat/raw/master/Assets/Images/menu.png" style="max-width:70%; height:auto;"/>
-<p><a href="https://github.com/Raphire/Win11Debloat/wiki/" target="_blank">Wiki aller möglichen Einstellungen</span></a>
-<h2>Empfehlung:</h2>
-<p> Standarteinstellungen beibehalten
-<p> KI-Features deaktivieren (VOR ALLEM WINIDOWS RECALL)
-
-<h1 id="tools"> Weitere Tools </h1>
-<p><a href="https://windhawk.net/" target="_blank">Windhawk</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp Verschiedene Mods zur eigenen Gestaltung von Win11
-<ol>
-<p>Empfohlene Mods:<p>
-<p><a href="https://windhawk.net/mods/explorer-context-menu-classic" target="_blank"><span class="tooltip" title="scheiß neues Scheißmenü zeigt nur die Hälfte der Funktionen">Classic context menu</a>
-<p><a href="https://windhawk.net/mods/windows-11-taskbar-styler" target="_blank">Taskbar Styler</a>
-<p><a href="https://windhawk.net/mods/windows-11-start-menu-styler" target="_blank">Start Menu Styler</a>
-</ol>
+<h1 id="Dangerous Things">Dangerous Things</h1>
+<p><a href="https://dangerousthings.com/en-de">Website</a></p>
+<p><a href="https://forum.dangerousthings.com/">Forum</a></p>
 <br>
-<p><span class="tooltip" title="falls du das Win10 Startmenü vermisst">Start 11</span>&nbsp;&nbsp;&nbsp;<span class="tooltip" title="oder du sprichst mich darauf an">(Bezahlt)</span>
+<p>Trade name: Dangerous Things
+
+<p>Phone number: 3602308087
+
+<p>Email: office@dangerousthings.com
+
+<p>Physical address: 336 36th Street, STE 366, Bellingham WA 98225, United States
 <br>
-<p><a href="https://github.com/microsoft/PowerToys/releases/download/v0.99.1/PowerToysSetup-0.99.1-arm64.exe" target="_blank"><span class="tooltip" title="direct Download">Powertoys</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; erweiterte Funktionalität <a href="https://learn.microsoft.com/en-us/windows/powertoys/" target="_blank">(Wiki)</a>
+<br>
+<h1 id="Sortiment1"></h1>
+<h2><a href="https://dangerousthings.com/en-de/collections/biomagnets">Biomagnete</a></h2>
+<table>
+	<tbody>
+		<tr>
+			<td>
+				<h4>M-Serie</h4>
+				<img src="https://cdn.shopify.com/s/files/1/0576/8105/1710/files/m-series_group_angle_square_10092025_367c5e3e-9ce4-4d0f-b4e9-84249e51a487.png?v=1772139466&width=400&crop=center"/>
+			</td>
+			<td>
+				<h4>X-Serie</h4>
+				<img src="https://cdn.shopify.com/s/files/1/0576/8105/1710/files/product_851294007387_xG3-Coins-1536x1536_b333b0fc-4b33-4218-afbf-6600a678bd8b.jpg?v=1787254452" style="max-width:400px; height:auto;"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<h4>m0422a</h4>
+				<ul>
+					<li><p>4mm x 2.2mm, axial, n55</p>
+					<li><p>181.95&euro;</p>
+					<li><p>Skalpell</p>
+				</ul>
+			</td>
+			<td>
+				<h4>xG3 v1</h4>
+				<ul>
+					<li><p>3mm x 15mm, axial, n52+</p>
+					<li><p>116.95&euro;</p>
+					<li><p>Hohlnadel</p>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<h4>m0426a</h4>
+				<ul>
+					<li><p>4mm x 2.6mm, axial, n52</p>
+					<li><p>163.95&euro;</p>
+					<li><p>Skalpell</p>
+				</ul>
+			</td>
+			<td>
+				<h4>xG3 v2</h4>
+				<ul>
+					<li><p>3mm x 15mm, diametrisch, n52+</p>
+					<li><p>116.95&euro;</p>
+					<li><p>Hohlnadel</p>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<h4>m04280bar</h4>
+				<ul>
+					<li><p>4mm x 28mm, diametrisch, n52</p>
+					<li><p>163.95&euro;</p>
+					<li><p>4g Nadel</p>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<h4>m08s</h4>
+				<ul>
+					<li><p>8mm kugel, n52</p>
+					<li><p>163.95</p>
+					<li><p>Skalpell</p>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<h4>m1148a</h4>
+				<ul>
+					<li><p>11mm x 4.8mm, axial, n52</p>
+					<li><p>235.95&euro;</p>
+					<li><p>Skalpell</p>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<h4>m1448a</h4>
+				<ul>
+					<li><p>14mm x 4.8mm, axial, n55</p>
+					<li><p>271.95&euro;</p>
+					<li><p>Skalpell</p>
+				</ul>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<h2><a href="https://dangerousthings.com/en-de/collections/chips">Chips</a></h2>
+<p> (Ich werde jetzt nicht alle 24 Chips aufzählen, sie kosten 22.95€ - 906,95€ (für das Modell mit der neuen Bezahlfunktion über Fidesmo), es gibt RFID und NFC, flexibel und unflexibel, mit und ohne LEDs)
+<h2><a href="https://dangerousthings.com/en-de/collections/aesthetic">Leuchtimplantate</a></h2>
+
+<div class="list-container">
+    <div class="list-box">
+	<img src="https://cdn.shopify.com/s/files/1/0576/8105/1710/files/xglow_in_injector_b1895313-f6cf-4789-92c2-9f01d6204518.png?v=1772047749&width=400&crop=center" style="max-width:75%; height:auto;"/>
+	<p>xGlow
+      <ul>
+		<li><p>3mm x 15mm 
+		<li><p>Farbauswahl grün/aqua
+		<li><p>107.95€
+		<li><p>4g Hohlnadel
+      </ul>
+    </div>
+
+    <div class="list-box">
+	<img src="https://cdn.shopify.com/s/files/1/0576/8105/1710/files/xGlow-XLs_and_lego.gif?v=1772047724&width=400&crop=center" style="max-width:75%; height:auto;"/>
+	<p>xGlow XL
+      <ul>
+		<li><p>4mm x 28mm 
+		<li><p>Farbauswahl grün/aqua
+		<li><p>153.95€
+		<li><p>4g Hohlnadel
+      </ul>
+    </div>
+
+    <div class="list-box">
+	<img src="https://cdn.shopify.com/s/files/1/0576/8105/1710/files/glow_hearts.png?v=1772046369&width=400&crop=center" style="max-width:75%; height:auto;"/>
+	<p>Leuchtherz
+      <ul>
+		<li><p>25mm x 25mm x 2mm
+		<li><p>Farbauswahl grün/aqua
+		<li><p>135.95€
+		<li><p>Skalpell
+      </ul>
+    </div>
+	
+    <div class="list-box">
+	<img src="https://cdn.shopify.com/s/files/1/0576/8105/1710/files/gs-series_25.png?v=1790446173&width=400&crop=center" style="max-width:75%; height:auto;"/>
+	<p>gs-Serie
+      <ul>
+		<li><p>Leuchtsilikon
+		<li><p>Herz, Hexagon, Stern, Radioaktiv
+		<li><p>Jeweils Umriss oder gefüllt
+		<li><p>Dicke: 2.5mm; 5mm; 7,5mm
+		<li><p>Durchmesser: 12.5mm; 25mm
+		<li><p>Preis nach Größe: 90.95€ - 135.95€
+      </ul>
+   </div>
+</div>
+<br>
+<h2 id="Lieferung1">Lieferung</h2>
+<br>
+<p>UPS Worldwide Expedited, 3 - 4 Tage
+<p>$36.89
+<br>
+<br>
+<p>UPS Worldwide Saver, 3 - 4 Tage
+<p>$40.41
+<br>
+<br>
+<p>DHL Express Worldwide, 2 - 3 Tage
+<p>$41.77
+<br>
+<br>
+<p>UPS Worldwide Express, 3 - 4 Tage
+<p>$45.03
+<br>
+<br>
+<p>USPS Priority Mail International, 6 - 10 Tage
+<p>$81.20
+<br>
+<br>
+<p>UPS Worldwide Express Plus, 3 - 4 Tage
+<p>$85.83
+<br>
+<br>
+<p>USPS Priority Mail Express International, 3 - 5 Tage
+<p>$96.70
+<br>
+<br>
+<h1 id="Abysswalker">Abysswalker</h1>
+<p><a href="https://abysswalker.org/de/store">Website</a></p>
+<p><a href="https://blog.abysswalker.org/">Blog</a></p>
+<br>
+<p>contact@abysswalker.org
+<p>+16893022977
+<br>
+<br>
+<h1 id="Sortiment2"></h1>
+<h2><a href="https://abysswalker.org/de/categories/magnets">Biomagnete</a></h2>
+<div class="list-container">
+    <div class="list-box">
+	<img src="https://abysswalker.org/_next/image?url=https%3A%2F%2Fdata.abysswalker.org%2F4825SideUP-01JZG1PZSYVE1M2A4GRRNYG4FG.png&w=640&q=75" style="max-width:400px; height:auto;"/>
+	<p>Lodestone 4825
+      <ul>
+		<li><p>4.8 x 2.5mm
+		<li><p>samarium cobalt
+		<li><p>2589 Gauss
+		<li><p>149.00€
+		<li><p>Skalpell
+      </ul>
+    </div>
+
+    <div class="list-box">
+	<img src="https://abysswalker.org/_next/image?url=https%3A%2F%2Fdata.abysswalker.org%2F5830SideUP-01JZG1EVB5AA6PWN003HYFHEFP.png&w=640&q=75" style="max-width:400px; height:auto;"/>
+	<p>Lodestone 5830
+      <ul>
+		<li><p>5.8 x 3.0mm
+		<li><p>samarium cobalt
+		<li><p>2710 Gauss ±100
+		<li><p>209.00€
+		<li><p>Skalpell
+      </ul>
+    </div>
+
+    <div class="list-box">
+	<img src="https://abysswalker.org/_next/image?url=https%3A%2F%2Fdata.abysswalker.org%2F3824FlatUP-01JZG2BYDJYERE9ZFM790ZZAZ7.png&w=640&q=75" style="max-width:400px; height:auto;"/>
+	<p>Lodestone 3824
+      <ul>
+		<li><p>3.8 x 2.45mm
+		<li><p>samarium cobalt
+		<li><p>2660 Gauss ±100
+		<li><p>159.00€
+		<li><p>Skalpell
+      </ul>
+    </div>
+	
+    <div class="list-box">
+	<img src="https://abysswalker.org/_next/image?url=https%3A%2F%2Fdata.abysswalker.org%2F6826UP-01JZG24QH17ARQBAM6RNKV3QKN.png&w=640&q=75" style="max-width:400px; height:auto;"/>
+	<p>Lodestone 6826
+      <ul>
+		<li><p>6.8 x 2.65mm
+		<li><p>samarium cobalt
+		<li><p>259.00€
+		<li><p>Skalpell
+      </ul>
+   </div>
+
+    <div class="list-box">
+	<img src="https://abysswalker.org/_next/image?url=https%3A%2F%2Fdata.abysswalker.org%2F3PackStickyFingersUP-01K119G0AS8RFTZRP8RQVWK89E.png&w=640&q=75" style="max-width:400px; height:auto;"/>
+	<p>Sticky Fingers Pack
+      <ul>
+		<li><p>2 x Lodestone 3824
+		<li><p>1 xLodestone 6826
+		<li><p>519.00€
+		<li><p>Skalpell
+      </ul>
+    </div>
+</div>
+
+<h2><a href="https://abysswalker.org/de/categories/chips">Chips</a></h2>
+
+<div class="list-container">
+    <div class="list-box">
+	<img src="https://abysswalker.org/_next/image?url=https%3A%2F%2Fdata.abysswalker.org%2FNFC-01KGZ95P5R6087M6NK99JENHR1.png&w=640&q=75" style="max-width:400px; height:auto;"/>
+	<p>NFC
+      <ul>
+		<li><p>3.8 x 2.45mm
+		<li><p>NTAG216 ISO14443-3
+		<li><p>13.50€
+		<li><p>Hohlnadel
+      </ul>
+    </div>
+
+    <div class="list-box">
+	<img src="https://abysswalker.org/_next/image?url=https%3A%2F%2Fdata.abysswalker.org%2FRFID-01KJWFXYQ0H3E608AQ9VXKPD3J.png&w=640&q=75" style="max-width:400px; height:auto;"/>
+	<p>RFID
+      <ul>
+		<li><p>3.8 x 2.45mm
+		<li><p>T5577 FDX-A (FECAVA)
+		<li><p>13.50€
+		<li><p>Hohlnadel
+      </ul>
+    </div>
+</div>
+
+<h2><a href="https://abysswalker.org/de/categories/glow">Leuchtpulver</a></h2>
+<p><a href="https://blog.abysswalker.org/glowscar-procedure-guide/">Guide</a></p>
+
+
+<div class="list-container">
+    <div class="list-box">
+	<img src="https://abysswalker.org/_next/image?url=https%3A%2F%2Fdata.abysswalker.org%2FGreen150-01M3PRHFSGQTJ82E4W5TX1E0J4.png&w=640&q=75" style="max-width:400px; height:auto;"/>
+	<p>Grün
+      <ul>
+		<li><p>2.5g
+		<li><p>85-150 µm
+		<li><p>17.00€
+		<li><p>Skalpell
+      </ul>
+    </div>
+
+    <div class="list-box">
+	<img src="https://abysswalker.org/_next/image?url=https%3A%2F%2Fdata.abysswalker.org%2FAqua150-01M3PRJASDJBWZ8RFV6TE77HAW.png&w=640&q=75" style="max-width:400px; height:auto;"/>
+	<p>Aqua
+      <ul>
+		<li><p>2.5g
+		<li><p>85-150 µm
+		<li><p>17.00€
+		<li><p>Skalpell
+      </ul>
+    </div>
+	
+    <div class="list-box">
+	<img src="https://abysswalker.org/_next/image?url=https%3A%2F%2Fdata.abysswalker.org%2FPurple35-01M3PRGPQN3D9VFXMPD7TAW5FE.png&w=640&q=75" style="max-width:400px; height:auto;"/>
+	<p>Lila
+      <ul>
+		<li><p>2.5g
+		<li><p>35-40 µm
+		<li><p>17.00€
+		<li><p>Skalpell
+      </ul>
+   </div>
+
+    <div class="list-box">
+	<img src="https://abysswalker.org/_next/image?url=https%3A%2F%2Fdata.abysswalker.org%2FTurquoise150-01M3PRK6CJB4HMS1R3ZTPC1BQ5.png&w=640&q=75" style="max-width:400px; height:auto;"/>
+	<p>Türkis
+      <ul>
+		<li><p>2.5g
+		<li><p>85-150 µm
+		<li><p>17.00€
+		<li><p>Skalpell
+      </ul>
+    </div>
+</div>
+<br>
+<h1 id="Lieferung2">Lieferung</h1>
+<br>
+<p>International, 1 - 30 Tage
+<p>10€
+<br>
+<br>
+<h1 id="Upgraded-Humans">Upgraded-Humans</h1>
+<p><a href="https://upgraded-humans.de/">Website</a></p>
+<p><a href="https://blog.abysswalker.org/">Blog</a></p>
+<br>
+<p>Disclaimer: Auch wenn diese Seite laut allen Scam-Detektoren als vertrauenswürdig eingestuft wird, bin ich extrem skeptisch.
+<p>Der Quellcode wurde safe von einer KI geschrieben, die meisten Bilder sind KI-generiert und das letzte Mal, als ich sie angeschaut habe, waren die Hälfte der Funktionen noch nicht implementiert.
+<br>
+<br>
+<p>Viel interessanter finde ich aber den Gründer.
+<p>Er ist Transhumanist, aber nicht auf die coole Weise, sondern auf die Tech-Bro Weise, "Biohacking"(=Supplemente nehmen), Lichtenergie, Bücher, Kurse und der ganze shit. Die komplette pseudo- Esoterik-schiene.
+<p>Eigentlich könnte ich auch einfach ein Bild von ihm zeigen, das sagt eigentlich schon alles
+<br>
+<br>
+<br>
+<details>
+  <summary style="cursor: pointer; color: #00ff00; text-decoration: underline;">
+    Dr. Patrick Kramer (achtung Jumpscare lol)
+  </summary>
+  <img src="https://upgraded-humans.de/thumbnail/23/02/1a/1718651392/_fsn0027-kleinhzkyumhltcdqd_1920x1920.jpg?ts=1718651853" alt="Description" style="max-width: 100%; margin-top: 10px;">
+</details>
+<br>
+<p>bietet (neben dem ganzen weirden Zeug) die selben Produkte wie Dangerous Things, der xG3 Magnet z.B. für 139,95€
+<p>Wollte es nur trotzdem in die Liste aufnehmen, bevor du denkst ich hätte nicht gründlich gesucht v.v bin da vor einer Weile schon in ein Rabbithole gefallen und hab über den CEO nachgeforscht.
+<br>
+<br>
 <br>
 <br>
 <br>
 <br>
 <p><a href="#top">Zurück zum Seitenanfang</a></p>
-
 </body>
-</html>
 </html>
